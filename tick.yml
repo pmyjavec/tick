@@ -1,12 +1,34 @@
 ---
+# Playbook to deploying the TICK stack
+  # Deploy to all hosts
 - hosts: all
+  # Run commands as sudo
   become: true
-  # Each component of the stack is installed via tasks defined in roles
-  roles: # Each component of the stack is installed via tasks defined in roles
+
+  # All components of the stack are deployed with respective roles, inside the roles/ directory.
+  # http://docs.ansible.com/ansible/playbooks_roles.html for more on roles.
+  roles:
     - influxdb
     - rossmcdonald.telegraf
-    - kbrebanov.chronograf
+    - kbrebanov.chronograf # Nice to have to visualisation
     - kbrebanov.kapacitor
+
+  # Configuration variables can be used to change the behaviour of roles,
+  # for example specify versions to install, or change the way a configuration file is generated.
+  # For a list of defaults, see roles/<name>/defaults/.
   vars:
     chronograf_version: '1.0.0'
     chronograf_bind: '0.0.0.0:10000'
+    # Telegraf plugins can be used to gather more things, such as disk usage stats
+    telegraf_version: '1.0.0-1'
+    # Plugins to be configured for metrics collection.
+    telegraf_plugins:
+      - name: cpu
+        options:
+          percpu: "false"
+          totalcpu: "true"
+          fielddrop:
+            - "time_*"
+    kapacitor_version: '1.0.0-1'
+    # Configure capcitor to subsribe to metrics receivced by InfluxDB
+    kapacitor_influxdb_enabled: true
