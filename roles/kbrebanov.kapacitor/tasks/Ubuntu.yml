@@ -1,0 +1,37 @@
+---
+# tasks file for kapacitor (Ubuntu specific)
+
+- name: Download InfluxDB GPG key
+  become: yes
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+  tags:
+    - kapacitor
+
+- name: Ensure apt-transport-https is installed
+  become: yes
+  apt:
+    name: apt-transport-https
+    state: present
+  tags:
+    - kapacitor
+
+- name: Configure InfluxDB APT repository
+  become: yes
+  apt_repository:
+    repo: 'deb https://repos.influxdata.com/ubuntu {{ ansible_distribution_release }} {{ kapacitor_release_channel }}'
+    state: present
+  tags:
+    - kapacitor
+
+- name: Install Kapacitor packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - "{{ kapacitor_packages }}"
+  tags:
+    - kapacitor

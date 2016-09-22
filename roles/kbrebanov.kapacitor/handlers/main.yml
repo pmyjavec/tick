@@ -1,0 +1,10 @@
+---
+# handlers file for kapacitor
+
+- name: restart kapacitor
+  become: yes
+  service:
+    name: "{{ kapacitor_service_name }}"
+    state: restarted
+  tags:
+    - kapacitor

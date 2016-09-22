@@ -1,0 +1,4 @@
+---
+# vars file for kapacitor
+
+kapacitor_service_name: kapacitor

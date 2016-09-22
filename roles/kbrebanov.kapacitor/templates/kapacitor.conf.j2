@@ -1,0 +1,415 @@
+# {{ ansible_managed }}
+
+hostname = "{{ kapacitor_hostname }}"
+data_dir = "{{ kapacitor_data_dir }}"
+
+[http]
+  bind-address = "{{ kapacitor_http_bind_address }}"
+{% if kapacitor_http_auth_enabled %}
+  auth-enabled = true
+{% else %}
+  auth-enabled = false
+{% endif %}
+{% if kapacitor_http_log_enabled %}
+  log-enabled = true
+{% else %}
+  log-enabled = false
+{% endif %}
+{% if kapacitor_http_write_tracing %}
+  write-tracing = true
+{% else %}
+  write-tracing = false
+{% endif %}
+{% if kapacitor_http_pprof_enabled %}
+  pprof-enabled = true
+{% else %}
+  pprof-enabled = false
+{% endif %}
+{% if kapacitor_http_https_enabled %}
+  https-enabled = true
+{% else %}
+  https-enabled = false
+{% endif %}
+  https-certificate = "{{ kapacitor_http_https_certificate }}"
+
+[logging]
+  file = "{{ kapacitor_logging_file }}"
+  level = "{{ kapacitor_logging_level }}"
+
+[replay]
+  dir = "{{ kapacitor_replay_dir }}"
+
+[storage]
+  boltdb = "{{ kapacitor_storage_boltdb }}"
+
+[deadman]
+{% if kapacitor_deadman_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+  threshold = {{ kapacitor_deadman_threshold }}
+  interval = "{{ kapacitor_deadman_interval }}"
+  id = "{{ kapacitor_deadman_id }}"
+  message = "{{ kapacitor_deadman_message }}"
+
+[[influxdb]]
+{% if kapacitor_influxdb_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+{% if kapacitor_influxdb_default %}
+  default = true
+{% else %}
+  default = false
+{% endif %}
+  name = "{{ kapacitor_influxdb_name }}"
+{% if kapacitor_influxdb_urls %}
+  urls = [
+{% for url in kapacitor_influxdb_urls %}
+{% if not loop.last %}
+    "{{ url }}",
+{% else %}
+    "{{ url }}"
+{% endif %}
+{% endfor %}
+  ]
+{% endif %}
+  username = "{{ kapacitor_influxdb_username }}"
+  password = "{{ kapacitor_influxdb_password }}"
+  timeout = {{ kapacitor_influxdb_timeout }}
+{% if kapacitor_influxdb_ssl_ca %}
+  ssl-ca = "{{ kapacitor_influxdb_ssl_ca }}"
+{% endif %}
+{% if kapacitor_influxdb_ssl_cert %}
+  ssl-cert = "{{ kapacitor_influxdb_ssl_cert }}"
+{% endif %}
+{% if kapacitor_influxdb_ssl_key %}
+  ssl-key = "{{ kapacitor_influxdb_ssl_key }}"
+{% endif %}
+{% if kapacitor_influxdb_insecure_skip_verify %}
+  insecure-skip-verify = true
+{% else %}
+  insecure-skip-verify = false
+{% endif %}
+  startup-timeout = "{{ kapacitor_influxdb_startup_timeout }}"
+{% if kapacitor_influxdb_disable_subscriptions %}
+  disable-subscriptions = true
+{% else %}
+  disable-subscriptions = false
+{% endif %}
+  subscription-protocol = "{{ kapacitor_influxdb_subscription_protocol }}"
+  subscriptions-sync-interval = "{{ kapacitor_influxdb_subscriptions_sync_interval }}"
+  udp-bind = "{{ kapacitor_influxdb_udp_bind }}"
+  udp-buffer = {{ kapacitor_influxdb_udp_buffer }}
+  udp-read-buffer = {{ kapacitor_influxdb_udp_read_buffer }}
+
+  [influxdb.subscriptions]
+{% for db, policies in kapacitor_influxdb_subscriptions.iteritems() %}
+{% if not loop.last %}
+    {{ db }} = [
+{% for policy in policies %}
+{% if not loop.last %}
+      "{{ policy }}",
+{% else %}
+      "{{ policy }}"
+{% endif %}
+{% endfor %}
+    ],
+{% else %}
+    {{ db }} = [
+{% for policy in policies %}
+{% if not loop.last %}
+      "{{ policy }}",
+{% else %}
+      "{{ policy }}"
+{% endif %}
+{% endfor %}
+    ]
+{% endif %}
+{% endfor %}
+
+  [influxdb.excluded-subscriptions]
+{% for db, policies in kapacitor_influxdb_excluded_subscriptions.iteritems() %}
+{% if not loop.last %}
+    {{ db }} = [
+{% for policy in policies %}
+{% if not loop.last %}
+      "{{ policy }}",
+{% else %}
+      "{{ policy }}"
+{% endif %}
+{% endfor %}
+    ],
+{% else %}
+    {{ db }} = [
+{% for policy in policies %}
+{% if not loop.last %}
+      "{{ policy }}",
+{% else %}
+      "{{ policy }}"
+{% endif %}
+{% endfor %}
+    ]
+{% endif %}
+{% endfor %}
+
+[smtp]
+{% if kapacitor_smtp_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  host = "{{ kapacitor_smtp_host }}"
+  port = {{ kapacitor_smtp_port }}
+  username = "{{ kapacitor_smtp_username }}"
+  password = "{{ kapacitor_smtp_password }}"
+  from = "{{ kapacitor_smtp_from }}"
+{% if kapacitor_smtp_to %}
+  to = [
+{% for to in kapacitor_smtp_to %}
+{% if not loop.last %}
+    "{{ to }}",
+{% else %}
+    "{{ to }}"
+{% endif %}
+{% endfor %}
+  ]
+{% endif %}
+{% if kapacitor_smtp_no_verify %}
+  no-verify = true
+{% else %}
+  no-verify = false
+{% endif %}
+  idle-timeout = "{{ kapacitor_smtp_idle_timeout }}"
+{% if kapacitor_smtp_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+{% if kapacitor_smtp_state_changes_only %}
+  state-changes-only = true
+{% else %}
+  state-changes-only = false
+{% endif %}
+
+[opsgenie]
+{% if kapacitor_opsgenie_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  api-key = "{{ kapacitor_opsgenie_api_key }}"
+{% if kapacitor_opsgenie_teams %}
+  teams = [
+{% for team in kapacitor_opsgenie_teams %}
+{% if not loop.last %}
+    "{{ team }}",
+{% else %}
+    "{{ team }}"
+{% endif %}
+{% endfor %}
+  ]
+{% endif %}
+{% if kapacitor_opsgenie_recipients %}
+  recipients = [
+{% for recipient in kapacitor_opsgenie_recipients %}
+{% if not loop.last %}
+    "{{ recipient }}",
+{% else %}
+    "{{ recipient }}"
+{% endif %}
+{% endfor %}
+  ]
+{% endif %}
+  url = "{{ kapacitor_opsgenie_url }}"
+  recovery_url = "{{ kapacitor_opsgenie_recovery_url }}"
+{% if kapacitor_opsgenie_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+
+[victorops]
+{% if kapacitor_victorops_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  api-key = "{{ kapacitor_victorops_api_key }}"
+  routing-key = "{{ kapacitor_victorops_routing_key }}"
+  url = "{{ kapacitor_victorops_url }}"
+{% if kapacitor_victorops_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+
+[pagerduty]
+{% if kapacitor_pagerduty_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  service-key = "{{ kapacitor_pagerduty_service_key }}"
+  url = "{{ kapacitor_pagerduty_url }}"
+{% if kapacitor_pagerduty_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+
+[slack]
+{% if kapacitor_slack_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_slack_url }}"
+  channel = "{{ kapacitor_slack_channel }}"
+{% if kapacitor_slack_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+{% if kapacitor_slack_state_changes_only %}
+  state-changes-only = true
+{% else %}
+  state-changes-only = false
+{% endif %}
+
+[telegram]
+{% if kapacitor_telegram_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_telegram_url }}"
+  token = "{{ kapacitor_telegram_token }}"
+  chat-id = "{{ kapacitor_telegram_chat_id }}"
+  parse-mode = "{{ kapacitor_telegram_parse_mode }}"
+{% if kapacitor_telegram_disable_web_page_preview %}
+  disable-web-page-preview = true
+{% else %}
+  disable-web-page-preview = false
+{% endif %}
+{% if kapacitor_telegram_disable_notification %}
+  disable-notification = true
+{% else %}
+  disable-notification = false
+{% endif %}
+{% if kapacitor_telegram_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+{% if kapacitor_telegram_state_changes_only %}
+  state-changes-only = true
+{% else %}
+  state-changes-only = false
+{% endif %}
+
+[hipchat]
+{% if kapacitor_hipchat_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_hipchat_url }}"
+  room = "{{ kapacitor_hipchat_room }}"
+  token = "{{ kapacitor_hipchat_token }}"
+{% if kapacitor_hipchat_global %}
+  global = true
+{% else %}
+  global = false
+{% endif %}
+{% if kapacitor_hipchat_state_changes_only %}
+  state-changes-only = true
+{% else %}
+  state-changes-only = false
+{% endif %}
+
+[alerta]
+{% if kapacitor_alerta_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_alerta_url }}"
+  token = "{{ kapacitor_alerta_token }}"
+  environment = "{{ kapacitor_alerta_environment }}"
+  origin = "{{ kapacitor_alerta_origin }}"
+
+[sensu]
+{% if kapacitor_sensu_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  addr = "{{ kapacitor_sensu_addr }}"
+  source = "{{ kapacitor_sensu_source }}"
+
+[reporting]
+{% if kapacitor_reporting_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_reporting_url }}"
+
+[stats]
+{% if kapacitor_stats_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  stats-interval = "{{ kapacitor_stats_interval }}"
+  database = "{{ kapacitor_stats_database }}"
+  retention-policy = "{{ kapacitor_stats_retention_policy }}"
+
+[udf]
+[udf.functions]
+
+[talk]
+{% if kapacitor_talk_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  url = "{{ kapacitor_talk_url }}"
+  author_name = "{{ kapacitor_talk_author_name }}"
+
+[collectd]
+{% if kapacitor_input_collectd_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  bind-address = "{{ kapacitor_input_collectd_bind_address }}"
+  database = "{{ kapacitor_input_collectd_database }}"
+  retention-policy = "{{ kapacitor_input_collectd_retention_policy }}"
+  batch-size = {{ kapacitor_input_collectd_batch_size }}
+  batch-pending = {{ kapacitor_input_collectd_batch_pending }}
+  batch-timeout = "{{ kapacitor_input_collectd_batch_timeout }}"
+  typesdb = "{{ kapacitor_input_collectd_typesdb }}"
+
+[opentsdb]
+{% if kapacitor_input_opentsdb_enabled %}
+  enabled = true
+{% else %}
+  enabled = false
+{% endif %}
+  bind-address = "{{ kapacitor_input_opentsdb_bind_address }}"
+  database = "{{ kapacitor_input_opentsdb_database }}"
+  retention-policy = "{{ kapacitor_input_opentsdb_retention_policy }}"
+  consistency-level = "{{ kapacitor_input_opentsdb_consistency_level }}"
+{% if kapacitor_input_opentsdb_tls_enabled %}
+  tls-enabled = true
+{% else %}
+  tls-enabled = false
+{% endif %}
+  certificate = "{{ kapacitor_input_opentsdb_certificate }}"
+  batch-size = {{ kapacitor_input_opentsdb_batch_size }}
+  batch-pending = {{ kapacitor_input_opentsdb_batch_pending }}
+  batch-timeout = "{{ kapacitor_input_opentsdb_batch_timeout }}"

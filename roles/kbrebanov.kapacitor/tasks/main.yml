@@ -1,0 +1,34 @@
+---
+# tasks file for kapacitor
+
+- name: Include distribution specific variables
+  include_vars: "{{ ansible_distribution }}.yml"
+  tags:
+    - kapacitor
+
+- name: Include distribution specific tasks
+  include: "{{ ansible_distribution }}.yml"
+  tags:
+    - kapacitor
+
+- name: Create Kapacitor configuration file
+  become: yes
+  template:
+    src: kapacitor.conf.j2
+    dest: /etc/kapacitor/kapacitor.conf
+    owner: root
+    group: "{{ kapacitor_group }}"
+    mode: 0644
+  notify:
+    - restart kapacitor
+  tags:
+    - kapacitor
+
+- name: Ensure Kapacitor service is started and enabled on boot
+  become: yes
+  service:
+    name: "{{ kapacitor_service_name }}"
+    state: started
+    enabled: yes
+  tags:
+    - kapacitor
