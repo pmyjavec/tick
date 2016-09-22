@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  # Each component of the stack is installed via tasks defined in roles
+  roles: # Each component of the stack is installed via tasks defined in roles
+    - influxdb
+    - rossmcdonald.telegraf
+    - kbrebanov.chronograf
+  vars:
+    chronograf_version: '1.0.0'
+    chronograf_bind: '0.0.0.0:10000'

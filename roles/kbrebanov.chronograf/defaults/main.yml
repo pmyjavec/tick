@@ -1,0 +1,8 @@
+---
+# defaults file for chronograf
+
+chronograf_version: 0.13
+
+chronograf_bind: "127.0.0.1:10000"
+chronograf_local_database: /opt/chronograf/chronograf.db
+chronograf_query_response_bytes_limit: 2500000

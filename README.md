@@ -40,6 +40,8 @@ This step make take some time as it will perform the following steps:
 2. Boot the VM.
 3. Run Ansible playbooks against the VM, installing the entire TICK stack.
 
+Once `vagrant up` is complete you will be able to access the _Chronograph_ dashboard in your browser by visiting `http://localhost:10000`
+
 ## Going Further
 
 ### Working with Ansible and Vagrant

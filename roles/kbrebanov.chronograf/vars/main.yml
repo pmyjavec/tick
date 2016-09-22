@@ -1,0 +1,4 @@
+---
+# vars file for chronograf
+
+chronograf_service_name: chronograf

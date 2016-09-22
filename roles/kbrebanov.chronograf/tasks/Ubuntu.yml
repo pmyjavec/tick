@@ -1,0 +1,29 @@
+---
+# tasks file for chronograf (Ubuntu specific)
+
+- name: Download InfluxDB GPG key
+  become: yes
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+  tags:
+    - chronograf
+
+- name: Configure InfluxDB APT repository
+  become: yes
+  apt_repository:
+    repo: 'deb https://repos.influxdata.com/ubuntu {{ ansible_distribution_release }} stable'
+    state: present
+  tags:
+    - chronograf
+
+- name: Install Chronograf packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - "{{ chronograf_packages }}"
+  tags:
+    - chronograf
