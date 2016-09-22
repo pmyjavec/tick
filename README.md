@@ -36,21 +36,21 @@ For more on what Kapacitor can do checkout the [getting started guide](https://d
 
 Is used to nicely visualize data stored in InfluxDB. Currently because we use Telegraf to report CPU usage to InfluxDB, it's a nice way to display this information in pretty graphs. It's not a vital piece of the stack, alerts would still work without this piece.
 
-# Requirements
+## Requirements
 
-## Vagrant
+### Vagrant
 
 As stated earlier, we use Ansible for deploying the stack, but Vagrant provides us with a place, or virtual machine, to actually deploy the stack, in a reproducible, automated way.
 
 Installation instructions can be found on the [Vagrant website](https://www.vagrantup.com/docs/installation/)
 
-## Ansible
+### Ansible
 
 Ansible is a modern day configuration management and orchestration tool in which the configuration management code is considered to be self-documenting .
 
 Please see the [Ansible installation guide](http://docs.ansible.com/ansible/intro_installation.html<Paste>)
 
-# Getting started
+## Getting started
 
 The first thing we should do is deploy the stack, using our fully automated process, at first it may seem like magic; however, paying close attention to the output will literally walk us through the deployment procedure, outlining  exactly the tasks being performed to deploy the stack. Go ahead and run the `vagrant up` command from this directory.
 
@@ -69,11 +69,11 @@ Next is the `tick.yml` playbook, this is the entry-point for Ansible. Each secti
 
 Now everything is running we can login to the box and have a play around with the environment by running `vagrant ssh`, you will see all the components running and may experiment with it, or use the playbooks to deploy to a production environment.
 
-# Working with the stack
+## Working with the stack
 
 Now the stack is deployed we can configure our alerts and change the configuration as required.
 
-## Creating alerts
+### Creating alerts
 
 Once the deployment is completed, we still need to configure an alert, this step has not been easy to automate and is still performed manually. The following procure can be followed to alert when the CPU is utilized more than 70%.
 
@@ -100,15 +100,15 @@ $ cat /dev/urandom | gzip | gzip -9 > /dev/null &
 $ tail -f /tmo/alerts.log
 ```
 
-## Teardown
+### Teardown
 
 When finished with your local environment, just run `vagrant destroy`
 
-# Getting help
+## Getting help
 
 All components used are open source, if Vagrant or Ansible fails, you can join the respective IRC channels on Freenode and ask for help.
 
-# TODO
+## TODO
 
 * Ensure latest versions are installed by default. For example, avoid having to set variables in the `tick.yml`
 * Set up a continuous query to calculate and store the average CPU busy percentage every 30 minutes.
